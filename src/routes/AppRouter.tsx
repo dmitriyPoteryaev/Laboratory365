@@ -5,7 +5,7 @@ import Navigation from "@modules/Navigation";
 import Peoples from "@modules/Peoples";
 import { Route, Routes } from "react-router-dom";
 
-const AppRouter = () => {
+const AppRouter: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigation />} />
