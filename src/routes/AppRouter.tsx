@@ -3,6 +3,7 @@ import React from "react";
 import Favorites from "@modules/Favorites";
 import Navigation from "@modules/Navigation";
 import Peoples from "@modules/Peoples";
+import TableInfoDefnitePerson from "@modules/TableInfoDefnitePerson";
 import { Route, Routes } from "react-router-dom";
 
 const AppRouter: React.FC = () => {
@@ -10,7 +11,7 @@ const AppRouter: React.FC = () => {
     <Routes>
       <Route path="/" element={<Navigation />} />
       <Route path="/peoples" element={<Peoples />} />
-      <Route path="/peoples/:id" element={<Peoples />} />
+      <Route path="/peoples/:id" element={<TableInfoDefnitePerson />} />
       <Route path="/favorites" element={<Favorites />} />
       <Route path="*" element={<Navigation />} />
     </Routes>

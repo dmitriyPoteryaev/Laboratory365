@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React from "react";
 
 import { mapInfoPeopleArrayToTableArray } from "@utils/mapInfoPeopleArrayToTableArray";
 import { Table, Button } from "antd";
@@ -8,12 +8,9 @@ let counter = 0;
 const TablePeople: React.FC<any> = (props) => {
   const { data, numberPage, setGettedInfoAboutPeopleWithDenifePage } = props;
 
-  const ggg = mapInfoPeopleArrayToTableArray(data[numberPage]);
-
-  // console.log("currentPeople", currentPeople, data);
-  counter++;
-
-  console.log("TAble", counter);
+  const ArrayWithInfoAboutAllPerson = mapInfoPeopleArrayToTableArray(
+    data[numberPage],
+  );
 
   const columns: ColumnsType<any> = [
     {
@@ -23,7 +20,7 @@ const TablePeople: React.FC<any> = (props) => {
     },
     {
       title: "Height",
-      dataIndex: "Height",
+      dataIndex: "height",
       key: "Height",
     },
     {
@@ -59,11 +56,8 @@ const TablePeople: React.FC<any> = (props) => {
     <div>
       <Table
         columns={columns}
-        dataSource={ggg}
-        pagination={{
-          total: 50,
-          onChange: (page, pageSize) => {},
-        }}
+        dataSource={ArrayWithInfoAboutAllPerson}
+        pagination={false}
       />
     </div>
   );

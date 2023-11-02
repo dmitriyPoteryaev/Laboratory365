@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
 
-import { addOrRemoveDataFromLocalStorage } from "@utils/addOrRemoveDataFromLocalStorage";
-
 import Error from "@modules/Error";
 import Loader from "@modules/Loader";
+import CustomSelect from "@shared/components/CustomSelect";
+import GenericHeader from "@shared/components/GenericHeader";
 import { peopleStore } from "@store/index";
+import { addOrRemoveDataFromLocalStorage } from "@utils/addOrRemoveDataFromLocalStorage";
+import { Button } from "antd";
 import { observer } from "mobx-react-lite";
+import { useNavigate } from "react-router-dom";
 
 import TablePeople from "./components/TablePeople";
 import useFetching from "../../hooks/useFetching";
-
-let counter = 0;
 
 const Peoples: React.FC = observer(() => {
   const { getDataAboutPeople } = peopleStore;
 
   const [numberPage, setNumberPage] = useState<string>("1");
+
+  const navigate = useNavigate();
 
   const [
     gettedInfoAboutPeopleWithDenifePage,
@@ -67,10 +70,6 @@ const Peoples: React.FC = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numberPage]);
 
-  counter++;
-
-  console.log("Main", counter);
-
   if (isLoading) {
     return <Loader description="Ожидайте..." />;
   }
@@ -81,28 +80,28 @@ const Peoples: React.FC = observer(() => {
 
   return (
     <>
+      <GenericHeader>
+        <Button
+          style={{ color: "white" }}
+          onClick={() => navigate(-1)}
+          type="text"
+        >
+          Back
+        </Button>
+        <Button
+          style={{ color: "white" }}
+          onClick={() => navigate("/favorites")}
+          type="text"
+        >
+          Favorites
+        </Button>
+      </GenericHeader>
+      <CustomSelect />
       <TablePeople
         data={gettedInfoAboutPeopleWithDenifePage}
         numberPage={numberPage}
         setGettedInfoAboutPeopleWithDenifePage={handler}
       />
-      <button
-        onClick={() => {
-          setNumberPage("2");
-        }}
-      >
-        {" "}
-        Всё меняем
-      </button>
-
-      <button
-        onClick={() => {
-          setNumberPage("1");
-        }}
-      >
-        {" "}
-        Обратно
-      </button>
     </>
   );
 });

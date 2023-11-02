@@ -1,6 +1,6 @@
 export const addOrRemoveDataFromLocalStorage = (
   status: string,
-  infoAboutFavoritePerson: any
+  infoAboutFavoritePerson: any,
 ) => {
   const { name } = infoAboutFavoritePerson;
 
@@ -19,7 +19,7 @@ export const addOrRemoveDataFromLocalStorage = (
 
       localStorage.setItem(
         "favorites",
-        JSON.stringify([...favoritiesPersonsWithoutDefinite])
+        JSON.stringify([...favoritiesPersonsWithoutDefinite]),
       );
     } else {
       const arr: any = [...favoritToArray, infoAboutFavoritePerson];

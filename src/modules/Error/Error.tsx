@@ -3,18 +3,19 @@ import React from "react";
 import { Layout } from "antd";
 import styled from "styled-components";
 
+const { Content } = Layout;
+const ErrorContainer = styled(Content)`
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+`;
+const InnerContainer = styled(Content)`
+  display: flex;
+  flex-direction: column;
+`;
+
 const Error = ({ error }: any) => {
-  const { Content } = Layout;
-  const ErrorContainer = styled(Content)`
-    display: flex;
-    min-height: 100vh;
-    justify-content: center;
-    align-items: center;
-  `;
-  const InnerContainer = styled(Content)`
-    display: flex;
-    flex-direction: column;
-  `;
   return (
     <ErrorContainer>
       <InnerContainer>

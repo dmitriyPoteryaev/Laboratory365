@@ -4,28 +4,13 @@ const getPeople = async (page: string) => {
   try {
     let res;
     if (page === "1") {
-      // const response = await axios.get(`https://swapi.dev/api/people`, {
-      //   params: {
-      //     key_gen: key_gen,
-      //   },
-      //   signal: controller.signal,
-      // });
+      // const response = await axios.get(
+      //   `https://swapi.dev/api/people/?page=` + page,
+      // );
 
       // if (response.status !== 200) {
       //   throw Error("Что пошло не так! Перезагрузите страницу");
       // }
-      // const {
-      //   employeeName,
-      //   employee,
-      //   clientId,
-      //   clientTitle,
-      //   keyGen,
-      //   email,
-      //   itemDescription,
-      //   itemName,
-      //   positionType,
-      //   itemList,
-      // }: responseForm = response.data.data;
 
       res = {
         count: 82,

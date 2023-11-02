@@ -12,15 +12,11 @@ class PeopleStore {
         throw Error(response);
       }
 
-      const { count, next, previous, results } = response;
-
       return response;
     } catch (err: any) {
       return err.message;
     }
   };
-
-  ShowWhatInputIsEmpty: boolean = false;
 
   constructor() {
     makeObservable(this, {
