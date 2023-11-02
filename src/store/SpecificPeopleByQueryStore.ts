@@ -16,7 +16,7 @@ class SpecificPeopleByQueryStore {
         throw Error(response);
       }
 
-      const { count, next, previous, results } = response;
+      const { results } = response;
 
       const nameArray = mapListSpecificPeopleToNameArray(results);
 

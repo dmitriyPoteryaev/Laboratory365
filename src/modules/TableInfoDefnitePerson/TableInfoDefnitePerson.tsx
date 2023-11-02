@@ -43,12 +43,13 @@ const TableInfoDefnitePerson = () => {
     useFetching(fetch);
 
   useEffect(() => {
-    const id = location.pathname.charAt(location.pathname.length - 1);
+    const aa = location.pathname.split(":");
+
+    const id = aa[aa.length - 1];
 
     fetching(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log();
 
   const columns: ColumnsType<any> = [
     {
@@ -101,12 +102,15 @@ const TableInfoDefnitePerson = () => {
     return <Error error={error} />;
   }
 
-  console.log(definitePerson);
-
-  const ggg = mapInfoPeopleArrayToTableArray(definitePerson);
+  const ArrayWithInfoAboutDefinitePerson =
+    mapInfoPeopleArrayToTableArray(definitePerson);
   return (
     <div>
-      <Table columns={columns} dataSource={ggg} pagination={false} />
+      <Table
+        columns={columns}
+        dataSource={ArrayWithInfoAboutDefinitePerson}
+        pagination={false}
+      />
     </div>
   );
 };

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import "./CustomSelect.css";
 import { specificPeopleByQueryStore } from "@store/index";
-import { mapListSpecificPeopleToNameArray } from "@utils/mapListSpecificPeopleToNameArray";
 import { Input } from "antd";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
@@ -18,8 +17,6 @@ const CustomSelect = observer(() => {
   const navigateHandler = (id: string) => {
     navigate("/peoples/:" + id);
   };
-
-  console.log(isLoading, error, listPeople);
   useEffect(() => {
     if (!!!searchValue.trim()) {
       return;
@@ -30,9 +27,8 @@ const CustomSelect = observer(() => {
     return () => {
       controller.abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
-
-  console.log(listPeople);
 
   return (
     <div className="CustomSelect">
