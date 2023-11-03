@@ -1,9 +1,12 @@
-export const mapListSpecificPeopleToNameArray = (arr: any) => {
-  return arr.map((elem: any) => {
-    const aa = elem.url.split("/");
-    const gg = aa[aa.length - 2];
+import { InfoAboutSpecificPerson } from "../api/peopleApi/typesPeopleApi";
+export const mapListSpecificPeopleToNameArray = (
+  arr: InfoAboutSpecificPerson[],
+) => {
+  return arr.map((elem: InfoAboutSpecificPerson) => {
+    const splitUrlToArray: string[] = elem.url.split("/");
+    const lenghArray = splitUrlToArray.length;
+    const id = splitUrlToArray[lenghArray - 2];
 
-    const id = gg;
     return { name: elem.name, id: id };
   });
 };

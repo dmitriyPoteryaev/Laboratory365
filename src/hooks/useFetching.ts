@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const useFetching = (callback: Function): [Function, boolean, string] => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   const fetching = async (...data: any) => {
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const response = await callback(...data);
 
       if (typeof response !== "object") {
         throw Error(response);
       }
+      return response;
     } catch (mesError: any) {
       setError(mesError.message);
     } finally {

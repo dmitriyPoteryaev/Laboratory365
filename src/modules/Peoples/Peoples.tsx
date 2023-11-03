@@ -2,73 +2,59 @@ import React, { useEffect, useState } from "react";
 
 import Error from "@modules/Error";
 import Loader from "@modules/Loader";
-import CustomSelect from "@shared/components/CustomSelect";
+import CustomSelect from "@modules/Peoples/components/CustomSelect";
 import GenericHeader from "@shared/components/GenericHeader";
+import Pagination from "@shared/components/Pagination";
 import { peopleStore } from "@store/index";
 import { addOrRemoveDataFromLocalStorage } from "@utils/addOrRemoveDataFromLocalStorage";
+import { changeStatusButtonInTable } from "@utils/changeStatusButtonInTable";
+import { getNumberPageFromURL } from "@utils/getNumberPageFromURL";
+import { mapInfoPeopleArrayToTableArray } from "@utils/mapInfoPeopleArrayToTableArray";
 import { Button } from "antd";
 import { observer } from "mobx-react-lite";
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import TablePeople from "./components/TablePeople";
+import { RowInTablePeople, AllInfoForPeoplePage } from "./typesInPeoplesPage";
 import useFetching from "../../hooks/useFetching";
 
 const Peoples: React.FC = observer(() => {
+  const location = useLocation();
+
   const { getDataAboutPeople } = peopleStore;
 
-  const [numberPage, setNumberPage] = useState<string>("1");
+  const [ArrayWithPeopleInSpecificPage, setArrayWithPeopleInSpecificPage] =
+    useState<AllInfoForPeoplePage>();
 
   const navigate = useNavigate();
 
-  const [
-    gettedInfoAboutPeopleWithDenifePage,
-    setGettedInfoAboutPeopleWithDenifePage,
-  ] = useState<any>({});
-
-  const handler = (record: any) => {
-    setGettedInfoAboutPeopleWithDenifePage((prevState: any) => {
-      return {
-        ...prevState,
-        [numberPage]: prevState[numberPage].map((elem: any) => {
-          if (elem.name === record.name) {
-            const currentStatus =
-              elem.status === "Удалить" ? "Добавить" : "Удалить";
-            return { ...elem, status: currentStatus };
-          } else {
-            return elem;
-          }
-        }),
-      };
+  const handler = (changinRow: RowInTablePeople) => {
+    setArrayWithPeopleInSpecificPage((prevState: any) => {
+      return changeStatusButtonInTable(prevState, changinRow);
     });
 
-    addOrRemoveDataFromLocalStorage(record.status, record);
+    addOrRemoveDataFromLocalStorage(changinRow.status, changinRow);
   };
 
-  const fetch = async (page: string) => {
-    const res = await getDataAboutPeople(page);
-
-    if (typeof res !== "object") {
-      throw Error(res);
-    }
-
-    const { count, next, previous, results } = res;
-
-    setGettedInfoAboutPeopleWithDenifePage({
-      ...gettedInfoAboutPeopleWithDenifePage,
-      [numberPage]: results,
-    });
-  };
   const [fetching, isLoading, error]: [Function, boolean, string] =
-    useFetching(fetch);
+    useFetching(getDataAboutPeople);
 
   useEffect(() => {
-    if (gettedInfoAboutPeopleWithDenifePage.hasOwnProperty(numberPage)) {
-      return;
-    }
-    fetching(numberPage);
+    const { search } = location;
+
+    const currentPage: string = getNumberPageFromURL(search);
+
+    fetching(currentPage).then((res: any) => {
+      setArrayWithPeopleInSpecificPage({
+        next: res?.next,
+        previous: res?.previous,
+        results: mapInfoPeopleArrayToTableArray(res?.results),
+      });
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [numberPage]);
+  }, [location]);
 
   if (isLoading) {
     return <Loader description="Ожидайте..." />;
@@ -98,10 +84,10 @@ const Peoples: React.FC = observer(() => {
       </GenericHeader>
       <CustomSelect />
       <TablePeople
-        data={gettedInfoAboutPeopleWithDenifePage}
-        numberPage={numberPage}
-        setGettedInfoAboutPeopleWithDenifePage={handler}
+        data={ArrayWithPeopleInSpecificPage}
+        functionForChangeData={handler}
       />
+      <Pagination data={ArrayWithPeopleInSpecificPage} />
     </>
   );
 });

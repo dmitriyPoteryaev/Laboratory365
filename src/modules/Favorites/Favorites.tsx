@@ -1,27 +1,39 @@
 import React, { useState } from "react";
 
+import GenericHeader from "@shared/components/GenericHeader";
 import { addOrRemoveDataFromLocalStorage } from "@utils/addOrRemoveDataFromLocalStorage";
+import { getArrayWithFavoriteFilmsFromLocalStorage } from "@utils/getArrayWithFavoriteFilmsFromLocalStorage";
 import { mapInfoPeopleArrayToTableArray } from "@utils/mapInfoPeopleArrayToTableArray";
 import { Table, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { useNavigate } from "react-router-dom";
 
-const Favorites = () => {
-  const favoritesPersons: any = localStorage.getItem("favorites");
+import {
+  LoaderContainer,
+  InnerLoaderContainer,
+  DescriptionContainer,
+} from "../Loader/Loader";
+import { RowInTablePeople } from "../Peoples/typesInPeoplesPage";
 
-  const favoritToArray: any = JSON.parse(favoritesPersons);
+const Favorites: React.FC = () => {
+  const navigate = useNavigate();
+
+  const favoritToArray = getArrayWithFavoriteFilmsFromLocalStorage();
 
   const [favoritePerosnPerson, setDefenitePerson] =
-    useState<any>(favoritToArray);
+    useState<RowInTablePeople[]>(favoritToArray);
 
-  const handler = (record: any) => {
-    setDefenitePerson((prevState: any) => {
-      return prevState.filter((elem: any) => elem.name !== record.name);
+  const handler = (record: RowInTablePeople) => {
+    setDefenitePerson((prevState: RowInTablePeople[]) => {
+      return prevState.filter(
+        (elem: RowInTablePeople) => elem.name !== record.name,
+      );
     });
 
     addOrRemoveDataFromLocalStorage(record.status, record);
   };
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<RowInTablePeople> = [
     {
       title: "Name",
       dataIndex: "name",
@@ -62,20 +74,49 @@ const Favorites = () => {
   ];
 
   if (favoritePerosnPerson?.length === 0 || favoritToArray === null) {
-    return <div> You don't have favorite films</div>;
+    return (
+      <>
+        <GenericHeader>
+          <Button
+            style={{ color: "white" }}
+            onClick={() => navigate(-1)}
+            type="text"
+          >
+            Back
+          </Button>
+        </GenericHeader>
+        <LoaderContainer>
+          <InnerLoaderContainer>
+            <DescriptionContainer>
+              You don't have favorite films
+            </DescriptionContainer>
+          </InnerLoaderContainer>
+        </LoaderContainer>
+      </>
+    );
   }
 
   const ArrayWithInfoAboutFavoritePerson =
     mapInfoPeopleArrayToTableArray(favoritePerosnPerson);
 
   return (
-    <div>
+    <>
+      <GenericHeader>
+        <Button
+          style={{ color: "white" }}
+          onClick={() => navigate(-1)}
+          type="text"
+        >
+          Back
+        </Button>
+      </GenericHeader>
       <Table
+        scroll={{ x: 500 }}
         columns={columns}
         dataSource={ArrayWithInfoAboutFavoritePerson}
         pagination={false}
       />
-    </div>
+    </>
   );
 };
 

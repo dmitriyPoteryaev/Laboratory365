@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export const url = "https://swapi.dev/api/";
+const url = "https://swapi.dev/api/";
 
-const getInfoAboutDedenitePerson = async (id: string) => {
+const getPeople = async (page: string) => {
   try {
-    const response = await axios.get(url + "people/" + id + "/");
+    const response = await axios.get(url + "people/?page=" + page);
 
     if (response.status !== 200) {
       throw Error("Что пошло не так! Перезагрузите страницу");
@@ -18,6 +18,6 @@ const getInfoAboutDedenitePerson = async (id: string) => {
   }
 };
 
-export const DefinitePersonAPI = {
-  getInfoAboutDedenitePerson,
+export const PeopleAPI = {
+  getPeople,
 };

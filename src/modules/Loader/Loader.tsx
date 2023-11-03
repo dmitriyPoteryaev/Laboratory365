@@ -4,23 +4,36 @@ import { Layout, Spin } from "antd";
 import styled from "styled-components";
 
 const { Content } = Layout;
-const LoaderContainer = styled(Content)`
+
+export const LoaderContainer = styled(Content)`
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const InnerLoaderContainer = styled(Content)`
   display: flex;
   flex-direction: column;
 `;
-const InnerContainer = styled(Content)`
-max-width: 200px,
-text-align: center,
-margin-bottom: 20px,
+export const DescriptionContainer = styled(Content)`
+  text-align: center;
+  margin-top: 50px;
 `;
 
-const Loader = (props: any) => {
+type LoaderProps = {
+  description: string;
+};
+
+const Loader: React.FC<LoaderProps> = (props) => {
   const { description } = props;
 
   return (
-    <LoaderContainer className="pageOrder__loader_Content">
-      <InnerContainer>{description}</InnerContainer>
-      <Spin size="large" />
+    <LoaderContainer>
+      <InnerLoaderContainer>
+        <Spin size="large" />
+        <DescriptionContainer>{description}</DescriptionContainer>
+      </InnerLoaderContainer>
     </LoaderContainer>
   );
 };

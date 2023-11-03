@@ -3,21 +3,24 @@ import React, { useState, useEffect } from "react";
 import { DefinitePersonAPI } from "@api/getInfoAboutDedenitePerson";
 import Error from "@modules/Error";
 import Loader from "@modules/Loader";
+import GenericHeader from "@shared/components/GenericHeader";
 import { addOrRemoveDataFromLocalStorage } from "@utils/addOrRemoveDataFromLocalStorage";
 import { mapInfoPeopleArrayToTableArray } from "@utils/mapInfoPeopleArrayToTableArray";
 import { Table, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { useNavigate } from "react-router-dom";
 
 import useFetching from "../../hooks/useFetching";
+import { RowInTablePeople } from "../Peoples/typesInPeoplesPage";
 
-const TableInfoDefnitePerson = () => {
-  const [definitePerson, setDefenitePerson] = useState<any>([]);
+const TableInfoDefnitePerson: React.FC = () => {
+  const [definitePerson, setDefenitePerson] = useState<RowInTablePeople[]>([]);
 
   const { getInfoAboutDedenitePerson } = DefinitePersonAPI;
 
-  const handler = (record: any) => {
+  const handler = (record: RowInTablePeople) => {
     const currentStatus = record.status === "Удалить" ? "Добавить" : "Удалить";
-    setDefenitePerson((prevState: any) => {
+    setDefenitePerson((prevState: RowInTablePeople[]) => {
       return [
         {
           ...prevState[0],
@@ -29,25 +32,20 @@ const TableInfoDefnitePerson = () => {
     addOrRemoveDataFromLocalStorage(record.status, record);
   };
 
-  const fetch = async (id: string) => {
-    const res = await getInfoAboutDedenitePerson(id);
+  const [fetching, isLoading, error]: [Function, boolean, string] = useFetching(
+    getInfoAboutDedenitePerson,
+  );
 
-    if (typeof res !== "object") {
-      throw Error(res);
-    }
-
-    setDefenitePerson([res]);
-  };
-
-  const [fetching, isLoading, error]: [Function, boolean, string] =
-    useFetching(fetch);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const aa = location.pathname.split(":");
+    const aa = window.location.pathname.split(":");
 
     const id = aa[aa.length - 1];
 
-    fetching(id);
+    fetching(id).then((res: any) => {
+      setDefenitePerson([res]);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -76,19 +74,18 @@ const TableInfoDefnitePerson = () => {
       title: "Add or remove favorite hero",
       key: "actions",
       render: (record) => {
-        if (record.status === "Удалить") {
-          return <></>;
-        }
         return (
-          <Button
-            type="primary"
-            danger={record.status === "Удалить" ? true : false}
-            onClick={() => {
-              handler(record);
-            }}
-          >
-            {record.status}
-          </Button>
+          record.status === "Добавить" && (
+            <Button
+              type="primary"
+              danger={record.status === "Удалить" ? true : false}
+              onClick={() => {
+                handler(record);
+              }}
+            >
+              {record.status}
+            </Button>
+          )
         );
       },
     },
@@ -105,13 +102,22 @@ const TableInfoDefnitePerson = () => {
   const ArrayWithInfoAboutDefinitePerson =
     mapInfoPeopleArrayToTableArray(definitePerson);
   return (
-    <div>
+    <>
+      <GenericHeader>
+        <Button
+          style={{ color: "white" }}
+          onClick={() => navigate(-1)}
+          type="text"
+        >
+          Back
+        </Button>
+      </GenericHeader>
       <Table
         columns={columns}
         dataSource={ArrayWithInfoAboutDefinitePerson}
         pagination={false}
       />
-    </div>
+    </>
   );
 };
 

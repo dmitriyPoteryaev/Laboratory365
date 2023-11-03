@@ -1,242 +1,25 @@
 import axios from "axios";
 
+import { url } from "./getInfoAboutDedenitePerson";
+
 const getSpecificPeopleBySerachQuery = async (
   searchQuery: string,
   signal: any,
 ) => {
   try {
-    let res;
-
-    const response = await axios.get(
-      `https://swapi.dev/api/people/?search=` + searchQuery,
-      { signal: signal },
-    );
+    const response = await axios.get(url + "/people/?search=" + searchQuery, {
+      signal: signal,
+    });
 
     if (response.status !== 200) {
       throw Error("Что пошло не так! Перезагрузите страницу");
     }
 
-    // res = {
-    //   count: 15,
-    //   next: "https://swapi.dev/api/people/?search=h&page=2",
-    //   previous: null,
-    //   results: [
-    //     {
-    //       name: "Darth Vader",
-    //       height: "202",
-    //       mass: "136",
-    //       hair_color: "none",
-    //       skin_color: "white",
-    //       eye_color: "yellow",
-    //       birth_year: "41.9BBY",
-    //       gender: "male",
-    //       homeworld: "https://swapi.dev/api/planets/1/",
-    //       films: [
-    //         "https://swapi.dev/api/films/1/",
-    //         "https://swapi.dev/api/films/2/",
-    //         "https://swapi.dev/api/films/3/",
-    //         "https://swapi.dev/api/films/6/",
-    //       ],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: ["https://swapi.dev/api/starships/13/"],
-    //       created: "2014-12-10T15:18:20.704000Z",
-    //       edited: "2014-12-20T21:17:50.313000Z",
-    //       url: "https://swapi.dev/api/people/4/",
-    //     },
-    //     {
-    //       name: "Beru Whitesun lars",
-    //       height: "165",
-    //       mass: "75",
-    //       hair_color: "brown",
-    //       skin_color: "light",
-    //       eye_color: "blue",
-    //       birth_year: "47BBY",
-    //       gender: "female",
-    //       homeworld: "https://swapi.dev/api/planets/1/",
-    //       films: [
-    //         "https://swapi.dev/api/films/1/",
-    //         "https://swapi.dev/api/films/5/",
-    //         "https://swapi.dev/api/films/6/",
-    //       ],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: [],
-    //       created: "2014-12-10T15:53:41.121000Z",
-    //       edited: "2014-12-20T21:17:50.319000Z",
-    //       url: "https://swapi.dev/api/people/7/",
-    //     },
-    //     {
-    //       name: "Biggs Darklighter",
-    //       height: "183",
-    //       mass: "84",
-    //       hair_color: "black",
-    //       skin_color: "light",
-    //       eye_color: "brown",
-    //       birth_year: "24BBY",
-    //       gender: "male",
-    //       homeworld: "https://swapi.dev/api/planets/1/",
-    //       films: ["https://swapi.dev/api/films/1/"],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: ["https://swapi.dev/api/starships/12/"],
-    //       created: "2014-12-10T15:59:50.509000Z",
-    //       edited: "2014-12-20T21:17:50.323000Z",
-    //       url: "https://swapi.dev/api/people/9/",
-    //     },
-    //     {
-    //       name: "Wilhuff Tarkin",
-    //       height: "180",
-    //       mass: "unknown",
-    //       hair_color: "auburn, grey",
-    //       skin_color: "fair",
-    //       eye_color: "blue",
-    //       birth_year: "64BBY",
-    //       gender: "male",
-    //       homeworld: "https://swapi.dev/api/planets/21/",
-    //       films: [
-    //         "https://swapi.dev/api/films/1/",
-    //         "https://swapi.dev/api/films/6/",
-    //       ],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: [],
-    //       created: "2014-12-10T16:26:56.138000Z",
-    //       edited: "2014-12-20T21:17:50.330000Z",
-    //       url: "https://swapi.dev/api/people/12/",
-    //     },
-    //     {
-    //       name: "Chewbacca",
-    //       height: "228",
-    //       mass: "112",
-    //       hair_color: "brown",
-    //       skin_color: "unknown",
-    //       eye_color: "blue",
-    //       birth_year: "200BBY",
-    //       gender: "male",
-    //       homeworld: "https://swapi.dev/api/planets/14/",
-    //       films: [
-    //         "https://swapi.dev/api/films/1/",
-    //         "https://swapi.dev/api/films/2/",
-    //         "https://swapi.dev/api/films/3/",
-    //         "https://swapi.dev/api/films/6/",
-    //       ],
-    //       species: ["https://swapi.dev/api/species/3/"],
-    //       vehicles: ["https://swapi.dev/api/vehicles/19/"],
-    //       starships: [
-    //         "https://swapi.dev/api/starships/10/",
-    //         "https://swapi.dev/api/starships/22/",
-    //       ],
-    //       created: "2014-12-10T16:42:45.066000Z",
-    //       edited: "2014-12-20T21:17:50.332000Z",
-    //       url: "https://swapi.dev/api/people/13/",
-    //     },
-    //     {
-    //       name: "Han Solo",
-    //       height: "180",
-    //       mass: "80",
-    //       hair_color: "brown",
-    //       skin_color: "fair",
-    //       eye_color: "brown",
-    //       birth_year: "29BBY",
-    //       gender: "male",
-    //       homeworld: "https://swapi.dev/api/planets/22/",
-    //       films: [
-    //         "https://swapi.dev/api/films/1/",
-    //         "https://swapi.dev/api/films/2/",
-    //         "https://swapi.dev/api/films/3/",
-    //       ],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: [
-    //         "https://swapi.dev/api/starships/10/",
-    //         "https://swapi.dev/api/starships/22/",
-    //       ],
-    //       created: "2014-12-10T16:49:14.582000Z",
-    //       edited: "2014-12-20T21:17:50.334000Z",
-    //       url: "https://swapi.dev/api/people/14/",
-    //     },
-    //     {
-    //       name: "Mon Mothma",
-    //       height: "150",
-    //       mass: "unknown",
-    //       hair_color: "auburn",
-    //       skin_color: "fair",
-    //       eye_color: "blue",
-    //       birth_year: "48BBY",
-    //       gender: "female",
-    //       homeworld: "https://swapi.dev/api/planets/32/",
-    //       films: ["https://swapi.dev/api/films/3/"],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: [],
-    //       created: "2014-12-18T11:12:38.895000Z",
-    //       edited: "2014-12-20T21:17:50.364000Z",
-    //       url: "https://swapi.dev/api/people/28/",
-    //     },
-    //     {
-    //       name: "Quarsh Panaka",
-    //       height: "183",
-    //       mass: "unknown",
-    //       hair_color: "black",
-    //       skin_color: "dark",
-    //       eye_color: "brown",
-    //       birth_year: "62BBY",
-    //       gender: "male",
-    //       homeworld: "https://swapi.dev/api/planets/8/",
-    //       films: ["https://swapi.dev/api/films/4/"],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: [],
-    //       created: "2014-12-19T17:55:43.348000Z",
-    //       edited: "2014-12-20T21:17:50.399000Z",
-    //       url: "https://swapi.dev/api/people/42/",
-    //     },
-    //     {
-    //       name: "Shmi Skywalker",
-    //       height: "163",
-    //       mass: "unknown",
-    //       hair_color: "black",
-    //       skin_color: "fair",
-    //       eye_color: "brown",
-    //       birth_year: "72BBY",
-    //       gender: "female",
-    //       homeworld: "https://swapi.dev/api/planets/1/",
-    //       films: [
-    //         "https://swapi.dev/api/films/4/",
-    //         "https://swapi.dev/api/films/5/",
-    //       ],
-    //       species: [],
-    //       vehicles: [],
-    //       starships: [],
-    //       created: "2014-12-19T17:57:41.191000Z",
-    //       edited: "2014-12-20T21:17:50.401000Z",
-    //       url: "https://swapi.dev/api/people/43/",
-    //     },
-    //     {
-    //       name: "Darth Maul",
-    //       height: "175",
-    //       mass: "80",
-    //       hair_color: "none",
-    //       skin_color: "red",
-    //       eye_color: "yellow",
-    //       birth_year: "54BBY",
-    //       gender: "male",
-    //       homeworld: "https://swapi.dev/api/planets/36/",
-    //       films: ["https://swapi.dev/api/films/4/"],
-    //       species: ["https://swapi.dev/api/species/22/"],
-    //       vehicles: ["https://swapi.dev/api/vehicles/42/"],
-    //       starships: ["https://swapi.dev/api/starships/41/"],
-    //       created: "2014-12-19T18:00:41.929000Z",
-    //       edited: "2014-12-20T21:17:50.403000Z",
-    //       url: "https://swapi.dev/api/people/44/",
-    //     },
-    //   ],
-    // };
-
     return response.data;
-  } catch (err: any) {
-    return err.message;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return err.message;
+    }
   }
 };
 

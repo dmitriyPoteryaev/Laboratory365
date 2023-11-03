@@ -1,12 +1,12 @@
+import { getArrayWithFavoriteFilmsFromLocalStorage } from "./getArrayWithFavoriteFilmsFromLocalStorage";
+
 export const addOrRemoveDataFromLocalStorage = (
   status: string,
   infoAboutFavoritePerson: any,
 ) => {
   const { name } = infoAboutFavoritePerson;
 
-  const favoritesPersons: any = localStorage.getItem("favorites");
-
-  const favoritToArray: any = JSON.parse(favoritesPersons);
+  const favoritToArray = getArrayWithFavoriteFilmsFromLocalStorage();
 
   if (!favoritToArray || favoritToArray.length === 0) {
     const arr: any = [infoAboutFavoritePerson];

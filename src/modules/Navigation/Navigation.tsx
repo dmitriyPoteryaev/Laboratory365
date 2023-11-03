@@ -11,14 +11,18 @@ const Navigation: React.FC = () => {
       <GenericHeader>
         <Button
           style={{ color: "white" }}
-          onClick={() => navigate("/peoples")}
+          onClick={() => {
+            navigate("/peoples?page=" + "1");
+          }}
           type="text"
         >
           Peoples
         </Button>
         <Button
           style={{ color: "white" }}
-          onClick={() => navigate("/favorites")}
+          onClick={() => {
+            navigate("/favorites");
+          }}
           type="text"
         >
           Favorites

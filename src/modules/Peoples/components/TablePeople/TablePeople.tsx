@@ -4,15 +4,26 @@ import { mapInfoPeopleArrayToTableArray } from "@utils/mapInfoPeopleArrayToTable
 import { Table, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
-let counter = 0;
-const TablePeople: React.FC<any> = (props) => {
-  const { data, numberPage, setGettedInfoAboutPeopleWithDenifePage } = props;
+import {
+  RowInTablePeople,
+  AllInfoForPeoplePage,
+} from "../../typesInPeoplesPage";
+
+export type TablePeopleProps = {
+  /** */
+  data?: AllInfoForPeoplePage;
+
+  functionForChangeData: (value: RowInTablePeople) => void;
+};
+
+const TablePeople: React.FC<TablePeopleProps> = (props) => {
+  const { data, functionForChangeData } = props;
 
   const ArrayWithInfoAboutAllPerson = mapInfoPeopleArrayToTableArray(
-    data[numberPage],
+    data?.results,
   );
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<RowInTablePeople> = [
     {
       title: "Name",
       dataIndex: "name",
@@ -36,16 +47,16 @@ const TablePeople: React.FC<any> = (props) => {
     {
       title: "Add or remove favorite hero",
       key: "actions",
-      render: (record) => {
+      render: (changinRow: RowInTablePeople) => {
         return (
           <Button
             type="primary"
-            danger={record.status === "Удалить" ? true : false}
+            danger={changinRow.status === "Удалить" ? true : false}
             onClick={() => {
-              setGettedInfoAboutPeopleWithDenifePage(record);
+              functionForChangeData(changinRow);
             }}
           >
-            {record.status}
+            {changinRow.status}
           </Button>
         );
       },
@@ -55,6 +66,7 @@ const TablePeople: React.FC<any> = (props) => {
   return (
     <div>
       <Table
+        scroll={{ x: 500 }}
         columns={columns}
         dataSource={ArrayWithInfoAboutAllPerson}
         pagination={false}
