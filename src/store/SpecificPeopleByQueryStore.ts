@@ -4,7 +4,7 @@ import { makeObservable, action, observable, runInAction } from "mobx";
 
 const { getSpecificPeopleBySerachQuery } = SpecificPeopleAPI;
 class SpecificPeopleByQueryStore {
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   error: string = "";
   listPeople: any = [];
 
@@ -15,14 +15,26 @@ class SpecificPeopleByQueryStore {
       });
 
       const response = await getSpecificPeopleBySerachQuery(query, signal);
+
       if (typeof response !== "object") {
         throw Error(response);
       }
 
       const { results } = response;
 
+      if (results.length === 0) {
+        runInAction(() => {
+          this.error = "";
+          this.listPeople = [{ name: "Ничего не найдено" }];
+        });
+
+        return;
+      }
+
       const nameArray = mapListSpecificPeopleToNameArray(results);
+
       runInAction(() => {
+        this.error = "";
         this.listPeople = nameArray;
       });
     } catch (err: unknown) {
@@ -39,7 +51,7 @@ class SpecificPeopleByQueryStore {
   };
 
   ResetToZeroAllState = () => {
-    this.isLoading = true;
+    this.isLoading = false;
     this.error = "";
     this.listPeople = [];
   };

@@ -28,18 +28,18 @@ const PaginationButton = styled(Button)`
 `;
 
 const Pagination: React.FC<any> = (props) => {
-  const { data } = props;
+  const { next, prev } = props;
 
   const navigate = useNavigate();
 
   const NextPageHadler = () => {
-    const nextPage: string = getNumberPageFromURL(data?.next);
+    const nextPage: string = getNumberPageFromURL(next);
 
     navigate("/peoples?page=" + nextPage);
   };
 
   const PreviouesPageHadler = () => {
-    const prevPage: string = getNumberPageFromURL(data?.previous);
+    const prevPage: string = getNumberPageFromURL(prev);
 
     navigate("/peoples?page=" + prevPage);
   };
@@ -48,14 +48,14 @@ const Pagination: React.FC<any> = (props) => {
     <PaginationConteiner>
       <InnerPaginationConteiner>
         <PaginationButton
-          disabled={data.previous ? false : true}
+          disabled={prev ? false : true}
           type="primary"
           onClick={PreviouesPageHadler}
         >
           Previous
         </PaginationButton>
         <PaginationButton
-          disabled={data.next ? false : true}
+          disabled={next ? false : true}
           type="primary"
           onClick={NextPageHadler}
         >

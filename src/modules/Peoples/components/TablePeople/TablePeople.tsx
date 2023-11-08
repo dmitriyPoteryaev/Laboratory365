@@ -19,9 +19,7 @@ export type TablePeopleProps = {
 const TablePeople: React.FC<TablePeopleProps> = (props) => {
   const { data, functionForChangeData } = props;
 
-  const ArrayWithInfoAboutAllPerson = mapInfoPeopleArrayToTableArray(
-    data?.results,
-  );
+  const ArrayWithInfoAboutAllPerson = mapInfoPeopleArrayToTableArray(data);
 
   const columns: ColumnsType<RowInTablePeople> = [
     {

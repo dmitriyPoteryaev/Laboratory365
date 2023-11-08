@@ -73,8 +73,26 @@ const ContainerPositionPerson = styled(Content)`
   }
 `;
 
+const ContainerPositionPersonWithOutHover = styled(Content)`
+  font-family: "DM Sans", sans-serif;
+  margin-top: 0;
+  color: black;
+  font-size: 15px;
+  padding-left: 20px;
+  padding-top: 11px;
+  padding-bottom: 0;
+  border-bottom: 1px solid #b2bdc7;
+  width: 100%;
+  height: 30px;
+  color: #2c555b;
+`;
+
 interface FoundedPosition {
   id: string;
+  name: string;
+}
+
+interface NotFoundedPosition {
   name: string;
 }
 
@@ -88,12 +106,29 @@ const CustomSelect = observer(() => {
   } = specificPeopleByQueryStore;
 
   const [searchValue, setSerchValue] = useState<string>("");
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const navigateHandler = (id: string) => {
     navigate("/peoples/:" + id);
   };
+
+  const HideFocusHandler = () => {
+    setIsFocus(false);
+  };
+  const ShowFocusHandler = () => {
+    setIsFocus(true);
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", HideFocusHandler);
+
+    return () => {
+      document.removeEventListener("click", HideFocusHandler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocus]);
   useEffect(() => {
     if (!!!searchValue.trim()) {
       ResetToZeroAllState();
@@ -108,28 +143,102 @@ const CustomSelect = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
-  const condition =
-    !isLoading &&
-    !!searchValue.trim() &&
-    (error === "" || error === "canceled") &&
-    listPeople.length !== 0;
+  if (isLoading) {
+    return (
+      <ContainerSelect>
+        <InnerSelectrContainer>
+          <InputSearch
+            placeholder="Search hero..."
+            size="large"
+            value={searchValue}
+            onChange={(event: InputEvent) => setSerchValue(event.target.value)}
+          />
+          {isLoading && <LoaderSpiner size="small" />}
+        </InnerSelectrContainer>
+      </ContainerSelect>
+    );
+  }
+  if (error && searchValue) {
+    if (error === "canceled") {
+      return (
+        <ContainerSelect>
+          <InnerSelectrContainer>
+            <InputSearch
+              placeholder="Search hero..."
+              size="large"
+              value={searchValue}
+              onChange={(event: InputEvent) =>
+                setSerchValue(event.target.value)
+              }
+            />
+            {<LoaderSpiner size="small" />}
+          </InnerSelectrContainer>
+        </ContainerSelect>
+      );
+    }
+    return (
+      <ContainerSelect>
+        <InnerSelectrContainer>
+          <InputSearch
+            placeholder="Search hero..."
+            size="large"
+            value={searchValue}
+            onChange={(event: InputEvent) => setSerchValue(event.target.value)}
+          />
+        </InnerSelectrContainer>
+      </ContainerSelect>
+    );
+  }
+
+  if (listPeople[0]?.name === "Ничего не найдено") {
+    return (
+      <ContainerSelect>
+        <InnerSelectrContainer
+          onClick={(event) => {
+            event.stopPropagation();
+            ShowFocusHandler();
+          }}
+        >
+          <InputSearch
+            placeholder="Search hero..."
+            size="large"
+            value={searchValue}
+            onChange={(event: InputEvent) => setSerchValue(event.target.value)}
+          />
+          {isFocus && (
+            <ContainerListPersons>
+              {listPeople.map((elem: NotFoundedPosition) => (
+                <ContainerPositionPersonWithOutHover key={elem.name}>
+                  {elem.name}
+                </ContainerPositionPersonWithOutHover>
+              ))}
+            </ContainerListPersons>
+          )}
+        </InnerSelectrContainer>
+      </ContainerSelect>
+    );
+  }
 
   return (
     <ContainerSelect>
-      <InnerSelectrContainer>
+      <InnerSelectrContainer
+        onClick={(event) => {
+          event.stopPropagation();
+          ShowFocusHandler();
+        }}
+      >
         <InputSearch
           placeholder="Search hero..."
           size="large"
           value={searchValue}
           onChange={(event: InputEvent) => setSerchValue(event.target.value)}
         />
-        {!condition && !!searchValue.trim() && <LoaderSpiner size="small" />}
-        {condition && (
+        {isLoading && <LoaderSpiner size="small" />}
+        {!isLoading && listPeople.length > 0 && isFocus && (
           <ContainerListPersons>
             {listPeople.map((elem: FoundedPosition) => (
               <ContainerPositionPerson
-                key={elem.name}
-                className="CustomLIstForSelect_position"
+                key={elem.id}
                 onClick={() => {
                   navigateHandler(elem.id);
                 }}

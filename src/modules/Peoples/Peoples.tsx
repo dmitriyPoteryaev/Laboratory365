@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import Error from "@modules/Error";
 import Loader from "@modules/Loader";
@@ -6,55 +6,33 @@ import CustomSelect from "@modules/Peoples/components/CustomSelect";
 import GenericHeader from "@shared/components/GenericHeader";
 import Pagination from "@shared/components/Pagination";
 import { peopleStore } from "@store/index";
-import { addOrRemoveDataFromLocalStorage } from "@utils/addOrRemoveDataFromLocalStorage";
-import { changeStatusButtonInTable } from "@utils/changeStatusButtonInTable";
-import { getNumberPageFromURL } from "@utils/getNumberPageFromURL";
-import { mapInfoPeopleArrayToTableArray } from "@utils/mapInfoPeopleArrayToTableArray";
 import { Button } from "antd";
 import { observer } from "mobx-react-lite";
-import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import TablePeople from "./components/TablePeople";
-import { RowInTablePeople, AllInfoForPeoplePage } from "./typesInPeoplesPage";
 import useFetching from "../../hooks/useFetching";
 
 const Peoples: React.FC = observer(() => {
-  const location = useLocation();
+  const page: any = new URLSearchParams(window.location.search).get("page");
 
-  const { getDataAboutPeople } = peopleStore;
-
-  const [ArrayWithPeopleInSpecificPage, setArrayWithPeopleInSpecificPage] =
-    useState<AllInfoForPeoplePage>();
+  const {
+    getDataAboutPeople,
+    nextPage,
+    prevPage,
+    currentListOfPeople,
+    ChangeStateCurrentPeople,
+  } = peopleStore;
 
   const navigate = useNavigate();
-
-  const handler = (changinRow: RowInTablePeople) => {
-    setArrayWithPeopleInSpecificPage((prevState: any) => {
-      return changeStatusButtonInTable(prevState, changinRow);
-    });
-
-    addOrRemoveDataFromLocalStorage(changinRow.status, changinRow);
-  };
 
   const [fetching, isLoading, error]: [Function, boolean, string] =
     useFetching(getDataAboutPeople);
 
   useEffect(() => {
-    const { search } = location;
-
-    const currentPage: string = getNumberPageFromURL(search);
-
-    fetching(currentPage).then((res: any) => {
-      setArrayWithPeopleInSpecificPage({
-        next: res?.next,
-        previous: res?.previous,
-        results: mapInfoPeopleArrayToTableArray(res?.results),
-      });
-    });
-
+    fetching(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+  }, [page]);
 
   if (isLoading) {
     return <Loader description="Ожидайте..." />;
@@ -84,10 +62,10 @@ const Peoples: React.FC = observer(() => {
       </GenericHeader>
       <CustomSelect />
       <TablePeople
-        data={ArrayWithPeopleInSpecificPage}
-        functionForChangeData={handler}
+        data={currentListOfPeople}
+        functionForChangeData={ChangeStateCurrentPeople}
       />
-      <Pagination data={ArrayWithPeopleInSpecificPage} />
+      <Pagination next={nextPage} prev={prevPage} />
     </>
   );
 });
